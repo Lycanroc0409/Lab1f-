@@ -1,17 +1,31 @@
-﻿// Define the list of names
-let names = ["James"; "Robert"; "John"; "William"; "Michael"; "David"; "Richard"]
+open Microsoft.AspNetCore.Builder
+open Microsoft.Extensions.Hosting
+open Microsoft.AspNetCore.Http
 
-// Filter names that contain the letter 'I' (case insensitive)
-let filteredNames = 
-    names 
-    |> List.filter (fun name -> name.Contains("I", System.StringComparison.OrdinalIgnoreCase))
+// Set up the web application builder
+let builder = WebApplication.CreateBuilder()
 
-// Use List.fold to concatenate the filtered names with a comma and space
-let concatenatedNames = 
-    filteredNames 
-    |> List.fold (fun acc name -> 
-        if acc = "" then name // If accumulator is empty, just take the name
-        else acc + ", " + name) ""
+// Register services (optional f0or now)
+builder.Services.AddRazorPages()
 
-// Print the result
-printfn "Concatenated Names: %s" concatenatedNames
+// Build the app
+let app = builder.Build()
+
+// Serve static files (including the calculator HTML page)
+app.UseStaticFiles()
+s
+// Define a simple endpoint to handle requests (optional for backend calculation)
+app.MapGet("/api/calculate", fun (context: HttpContext) ->
+    let queryParams = context.Request.Query
+    let expression = queryParams["expression"]
+    let result = 
+        try
+            let evalResult = System.Data.DataTable().Compute(expression, null)
+            evalResult.ToString()
+        with
+        | :? System.Exception -> "Error"
+    context.Response.WriteAsync(result)
+)
+
+// Run the application
+app.Run()
